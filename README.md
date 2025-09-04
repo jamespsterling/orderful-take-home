@@ -6,10 +6,12 @@ A robust API for converting documents between three different formats: String, J
 
 - **Multi-format Support**: Convert between String, JSON, and XML formats
 - **Flexible Separators**: Customizable segment and element separators for string format
-- **Input Validation**: Comprehensive validation for all input formats
+- **Input Validation**: Comprehensive validation using Zod schemas
+- **API Documentation**: Interactive Swagger UI and OpenAPI specification
+- **Contract Testing**: Consumer-driven contract testing with Pact
 - **Production Ready**: Security middleware, rate limiting, error handling
 - **Extensible Architecture**: Easy to add new formats and converters
-- **Comprehensive Testing**: Unit tests, integration tests, and example data validation
+- **Comprehensive Testing**: Unit tests, integration tests, contract tests, and example data validation
 
 ## Architecture
 
@@ -31,7 +33,7 @@ src/
 - **StringConverter**: Handles parsing and serializing string format documents
 - **FormatConverter**: Converts parsed documents to different output formats
 - **DocumentConverter**: Orchestrates all conversion operations
-- **DocumentValidator**: Validates input documents and conversion requests
+- **ZodValidator**: Validates input documents and conversion requests using Zod schemas
 - **ConversionService**: Main service layer for business logic
 - **ConversionController**: HTTP API controller
 
@@ -39,7 +41,7 @@ src/
 
 ### Prerequisites
 
-- Node.js 18.0.0 or higher
+- Node.js 22.0.0 or higher
 - npm or yarn
 
 ### Setup
@@ -66,6 +68,11 @@ npm run dev
 ```
 
 The API will be available at `http://localhost:3000`
+
+### API Documentation
+
+- **Swagger UI**: `http://localhost:3000/api-docs` - Interactive API documentation
+- **OpenAPI Spec**: `http://localhost:3000/openapi.json` - Raw OpenAPI specification
 
 ## Usage
 
@@ -147,6 +154,16 @@ Content-Type: application/json
 }
 ```
 
+### Demo Script
+
+Run the included demo script to see the API in action:
+
+```bash
+npm run demo
+```
+
+This will demonstrate various conversion scenarios using the example EDI data.
+
 ### Example Data Conversion
 
 The API includes comprehensive support for the EDI X12 example data provided in the challenge. The example data demonstrates:
@@ -210,8 +227,14 @@ The API includes comprehensive support for the EDI X12 example data provided in 
 - `npm run build` - Build the TypeScript project
 - `npm run dev` - Start development server with hot reload
 - `npm start` - Start production server
-- `npm test` - Run tests
+- `npm test` - Run all tests
 - `npm run test:watch` - Run tests in watch mode
+- `npm run test:ui` - Run tests with UI interface
+- `npm run test:coverage` - Run tests with coverage report
+- `npm run test:consumer` - Run contract consumer tests
+- `npm run test:provider` - Run contract provider tests
+- `npm run pact:publish` - Publish Pact contracts to broker
+- `npm run demo` - Run the demo script
 - `npm run lint` - Run linting checks
 - `npm run lint:fix` - Fix linting issues
 - `npm run format` - Format code
@@ -220,9 +243,10 @@ The API includes comprehensive support for the EDI X12 example data provided in 
 
 The project includes comprehensive test coverage:
 
-- **Unit Tests**: Individual component testing
+- **Unit Tests**: Individual component testing with Vitest
 - **Integration Tests**: End-to-end conversion testing
 - **Example Data Tests**: Validation against the provided EDI data
+- **Contract Tests**: API contract testing with Pact
 
 Run tests:
 ```bash
@@ -231,8 +255,16 @@ npm test
 
 Run tests with coverage:
 ```bash
-npm test -- --coverage
+npm run test:coverage
 ```
+
+Run contract tests:
+```bash
+npm run test:consumer  # Generate contracts
+npm run test:provider  # Verify contracts
+```
+
+For detailed information about contract testing, see [CONTRACT_TESTING.md](./CONTRACT_TESTING.md).
 
 ### Code Quality
 
@@ -300,16 +332,16 @@ export class CsvConverter implements IConverter {
 - `PORT`: Server port (default: 3000)
 - `ALLOWED_ORIGINS`: CORS allowed origins (comma-separated)
 
-### Docker Support
+### Production Deployment
 
-```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY dist ./dist
-EXPOSE 3000
-CMD ["npm", "start"]
+The API is designed to run directly with Node.js without containerization overhead:
+
+```bash
+# Build the project
+npm run build
+
+# Start in production
+npm start
 ```
 
 ### Health Checks
