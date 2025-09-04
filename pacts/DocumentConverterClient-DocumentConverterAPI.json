@@ -1,0 +1,268 @@
+{
+  "consumer": {
+    "name": "DocumentConverterClient"
+  },
+  "interactions": [
+    {
+      "description": "a health check request",
+      "providerState": "API is running",
+      "request": {
+        "method": "GET",
+        "path": "/api/health"
+      },
+      "response": {
+        "body": {
+          "message": "Document Converter API is running",
+          "success": true,
+          "timestamp": "2025-09-03T21:59:14.672Z"
+        },
+        "headers": {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "matchingRules": {
+          "$.body.message": {
+            "match": "type"
+          },
+          "$.body.timestamp": {
+            "match": "type"
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a request for API information",
+      "providerState": "API is running",
+      "request": {
+        "method": "GET",
+        "path": "/"
+      },
+      "response": {
+        "body": {
+          "description": "API to convert documents between String, JSON, and XML formats",
+          "documentation": {
+            "openapi": "GET /openapi.json",
+            "swagger": "GET /api-docs"
+          },
+          "endpoints": {
+            "convert": "POST /api/convert",
+            "health": "GET /api/health"
+          },
+          "message": "Document Converter API",
+          "version": "1.0.0"
+        },
+        "headers": {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "matchingRules": {
+          "$.body.description": {
+            "match": "type"
+          },
+          "$.body.documentation.openapi": {
+            "match": "type"
+          },
+          "$.body.documentation.swagger": {
+            "match": "type"
+          },
+          "$.body.endpoints": {
+            "match": "type"
+          },
+          "$.body.message": {
+            "match": "type"
+          },
+          "$.body.version": {
+            "match": "type"
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a request to convert JSON to XML",
+      "providerState": "API can convert documents",
+      "request": {
+        "body": {
+          "document": {
+            "content": {
+              "ProductID": [
+                {
+                  "ProductID1": "4",
+                  "ProductID2": "8",
+                  "ProductID3": "15",
+                  "ProductID4": "16",
+                  "ProductID5": "23"
+                }
+              ]
+            },
+            "format": "json"
+          },
+          "targetFormat": "xml"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/api/convert"
+      },
+      "response": {
+        "body": {
+          "data": {
+            "content": "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root><ProductID><ProductID1>4</ProductID1></ProductID></root>",
+            "format": "xml"
+          },
+          "success": true
+        },
+        "headers": {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "matchingRules": {
+          "$.body.data.content": {
+            "match": "type"
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a request to convert string to JSON",
+      "providerState": "API can convert documents",
+      "request": {
+        "body": {
+          "document": {
+            "content": "ProductID*4*8*15*16*23~ProductID*a*b*c*d*e~AddressID*42*108*3*14~",
+            "elementSeparator": "*",
+            "format": "string",
+            "segmentSeparator": "~"
+          },
+          "targetFormat": "json"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/api/convert"
+      },
+      "response": {
+        "body": {
+          "data": {
+            "content": {
+              "AddressID": [
+                {
+                  "AddressID1": "42",
+                  "AddressID2": "108",
+                  "AddressID3": "3",
+                  "AddressID4": "14"
+                }
+              ],
+              "ProductID": [
+                {
+                  "ProductID1": "4",
+                  "ProductID2": "8",
+                  "ProductID3": "15",
+                  "ProductID4": "16",
+                  "ProductID5": "23"
+                }
+              ]
+            },
+            "format": "json"
+          },
+          "success": true
+        },
+        "headers": {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "matchingRules": {
+          "$.body.data.content": {
+            "match": "type"
+          },
+          "$.body.data.content.AddressID": {
+            "match": "type",
+            "min": 1
+          },
+          "$.body.data.content.AddressID[*].AddressID1": {
+            "match": "type"
+          },
+          "$.body.data.content.AddressID[*].AddressID2": {
+            "match": "type"
+          },
+          "$.body.data.content.AddressID[*].AddressID3": {
+            "match": "type"
+          },
+          "$.body.data.content.AddressID[*].AddressID4": {
+            "match": "type"
+          },
+          "$.body.data.content.ProductID": {
+            "match": "type",
+            "min": 1
+          },
+          "$.body.data.content.ProductID[*].ProductID1": {
+            "match": "type"
+          },
+          "$.body.data.content.ProductID[*].ProductID2": {
+            "match": "type"
+          },
+          "$.body.data.content.ProductID[*].ProductID3": {
+            "match": "type"
+          },
+          "$.body.data.content.ProductID[*].ProductID4": {
+            "match": "type"
+          },
+          "$.body.data.content.ProductID[*].ProductID5": {
+            "match": "type"
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a request with validation error",
+      "providerState": "API validates requests",
+      "request": {
+        "body": {
+          "document": {
+            "content": "ProductID*4*8*15*16*23~",
+            "elementSeparator": "*",
+            "format": "string",
+            "segmentSeparator": "~"
+          },
+          "targetFormat": "string"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/api/convert"
+      },
+      "response": {
+        "body": {
+          "error": "Target format cannot be the same as source format",
+          "success": false
+        },
+        "headers": {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "matchingRules": {
+          "$.body.error": {
+            "match": "type"
+          }
+        },
+        "status": 400
+      }
+    }
+  ],
+  "metadata": {
+    "pact-js": {
+      "version": "13.2.0"
+    },
+    "pactRust": {
+      "ffi": "0.4.22",
+      "models": "1.2.3"
+    },
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  },
+  "provider": {
+    "name": "DocumentConverterAPI"
+  }
+}
